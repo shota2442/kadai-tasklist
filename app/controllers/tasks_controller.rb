@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  before_action :require_user_logged_in
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
@@ -52,5 +53,12 @@ class TasksController < ApplicationController
 
   def task_params
     params.require(:task).permit(:content, :status)
+  end
+  
+  def correct_user
+    @task = current_user.microposts.find_by(id: params[:id])
+    unless @task
+      redirect_to root_url
+    end
   end
 end
